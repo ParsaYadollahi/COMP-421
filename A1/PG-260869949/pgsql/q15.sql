@@ -1,4 +1,4 @@
-SELECT t1.pname as name, t1.pstartdate as startdate, t2.count as numdevs
+SELECT t1.pname, t1.pstartdate as startdate, t2.count as numdevs
 FROM
   (SELECT *
   FROM project
@@ -18,7 +18,7 @@ FROM
 ;
 
 
---   name   | startdate  | numdevs
+--   pname  | startdate  | numdevs
 -- ---------+------------+---------
 --  Walleye | 2021-01-23 |       3
 -- (1 row)

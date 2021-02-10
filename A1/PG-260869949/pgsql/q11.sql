@@ -8,3 +8,12 @@ FROM
 WHERE t1.num > 2
 ORDER BY t1.pname
 ;
+
+
+--   name
+-- ---------
+--  Charles
+--  Kodiak
+--  Otters
+--  Walleye
+-- (4 rows)

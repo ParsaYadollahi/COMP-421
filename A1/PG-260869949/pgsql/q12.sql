@@ -8,3 +8,11 @@ FROM
 WHERE t1.num <= 2
 ORDER BY t1.pname
 ;
+
+
+--    name
+-- -----------
+--  Albatrose
+--  Capybara
+--  Snowy
+-- (3 rows)

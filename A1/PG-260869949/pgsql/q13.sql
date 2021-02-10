@@ -1,4 +1,4 @@
-SELECT t1.pname as name, t2.numdocs
+SELECT t1.pname, t2.numdocs
 FROM project as t1 JOIN
 (SELECT pname, count(*) as numdocs
 FROM document
@@ -11,7 +11,7 @@ ORDER BY t2.numdocs DESC, t2.pname ASC
 ;
 
 
---    name    | numdocs
+--    pname   | numdocs
 -- -----------+---------
 --  Charles   |       3
 --  Otters    |       3

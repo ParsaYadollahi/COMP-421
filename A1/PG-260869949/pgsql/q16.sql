@@ -1,4 +1,4 @@
-SELECT t1.ename as employeename, t1.employeeid
+SELECT t1.ename, t1.employeeid
 FROM
       developer as t1
   JOIN
@@ -18,7 +18,7 @@ FROM
   ;
 
 
---   employeename  | employeeid
+--      ename      | employeeid
 -- ----------------+------------
 --  May Owens      |      81532
 --  Milly Fulton   |      82102

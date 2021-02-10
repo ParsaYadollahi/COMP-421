@@ -9,3 +9,14 @@ JOIN
 ON t1.documentid = t2.documentid
 ORDER BY t1.pname ASC
 ;
+
+
+--  project name
+-- --------------
+--  Kodiak
+--  Kodiak
+--  Otters
+--  Otters
+--  Otters
+--  Snowy
+-- (6 rows)

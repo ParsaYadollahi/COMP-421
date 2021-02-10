@@ -1,4 +1,4 @@
-SELECT pname as name, pstartdate as startdate
+SELECT pname, pstartdate as startdate
 FROM project
 WHERE pstartdate <= (
   SELECT pstartdate as startdate
@@ -8,8 +8,7 @@ WHERE pstartdate <= (
 )
 ;
 
-
---   name   | startdate
+--   pname  | startdate
 -- ---------+------------
 --  Charles | 2019-12-08
 -- (1 row)

@@ -8,3 +8,9 @@ JOIN
 
 ON t1.documentid = t2.documentid
 ;
+
+
+--  numprojects
+-- -------------
+--            6
+-- (1 row)
