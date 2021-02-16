@@ -1,10 +1,12 @@
-SELECT * from developer
+SELECT developer.employeeid, ename
+FROM developer
 WHERE employeeid IN (
   SELECT employeeid FROM documentauthors
   WHERE documentid = 22
 )
 ORDER BY employeeid ASC
 ;
+
 
 
 --  employeeid |    ename
