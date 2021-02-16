@@ -1,32 +1,25 @@
-
-SELECT ename, employeeid
-FROM (
-        SELECT devassignments.employeeid, pname, developer.ename
-        FROM devassignments JOIN developer
-        ON devassignments.employeeid = developer.employeeid
-      ) AS t1
-      JOIN
-      (
-        SELECT *
-        FROM project
-        WHERE ptype = 'internal' and ptype != 'external'
-      ) AS t2
-ON t1.pname = t2.pname
-ORDER BY employeeid
+SELECT DISTINCT ename,
+  t1.employeeid
+FROM developer AS t1
+  JOIN devassignments AS t2 ON t1.employeeid = t2.employeeid
+WHERE t2.employeeid IN (
+    SELECT employeeid
+    FROM devassignments AS d
+      JOIN project AS p ON d.pname = p.pname
+    WHERE ptype = 'internal'
+  )
+  AND NOT t2.employeeid IN (
+    SELECT employeeid
+    FROM devassignments AS d
+      JOIN project AS p ON d.pname = p.pname
+    WHERE ptype = 'external'
+  )
+ORDER BY employeeid ASC;
 ;
-
 
 --      ename      | employeeid
 -- ----------------+------------
---  May Owens      |      81532
---  Milly Fulton   |      82102
---  Tom Smith      |      82453
---  Tom Smith      |      82453
---  Alice Kay      |      87634
---  Isabel Lee     |      89374
 --  Melanie Carson |      90234
 --  Zara Haas      |      93401
---  Zara Haas      |      93401
 --  John Doe       |      93752
---  John Doe       |      93752
--- (11 rows)
+-- (3 rows)
