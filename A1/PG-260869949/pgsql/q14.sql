@@ -1,4 +1,4 @@
-SELECT pname, pstartdate as startdate
+SELECT pname, pstartdate
 FROM project
 WHERE pstartdate <= (
   SELECT pstartdate as startdate

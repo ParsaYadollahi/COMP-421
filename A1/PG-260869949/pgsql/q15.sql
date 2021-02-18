@@ -9,16 +9,18 @@ FROM
     LIMIT 1
   )) as t1
   JOIN
-  (SELECT pname, count(*)
-  FROM devassignments
-  GROUP BY pname
+  (
+    SELECT t2.pname, count(t1.employeeid) FROM
+    devassignments AS t1 RIGHT JOIN project AS t2
+    ON t2.pname = t1.pname
+    GROUP BY t2.pname
   ) as t2
   ON t1.pname = t2.pname
   ORDER BY t1.pname
 ;
 
-
 --   pname  | startdate  | numdevs
 -- ---------+------------+---------
+--  Haddock | 2021-01-23 |       0
 --  Walleye | 2021-01-23 |       3
--- (1 row)
+-- (2 rows)
