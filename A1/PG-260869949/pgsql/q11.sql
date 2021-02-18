@@ -1,4 +1,4 @@
-SELECT pname as name
+SELECT pname
 FROM
 (
   SELECT pname, count(*) as num
@@ -9,8 +9,7 @@ WHERE t1.num > 2
 ORDER BY t1.pname
 ;
 
-
---   name
+--   pname
 -- ---------
 --  Charles
 --  Kodiak

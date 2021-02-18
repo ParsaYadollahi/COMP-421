@@ -1,16 +1,13 @@
 SELECT COUNT(*) as "numprojects"
-FROM document as t1
-JOIN
-  (SELECT *
-  FROM documentauthors
-  WHERE employeeid = 93401
+FROM
+  (SELECT DISTINCT pname
+  FROM documentauthors AS t1 LEFT JOIN document AS t2
+  ON t1.documentid = t2.documentid
+  WHERE t1.employeeid = 93401
   ) as t2
-
-ON t1.documentid = t2.documentid
 ;
-
 
 --  numprojects
 -- -------------
---            6
+--            3
 -- (1 row)
