@@ -5,13 +5,13 @@ WHERE budget >
   FROM project
   WHERE ptype = 'internal'
   )
-  ORDER BY budget, pname
+  ORDER BY budget DESC, pname ASC
 ;
 
 
 --   pname   |  budget
 -- ----------+----------
---  Capybara | 19500000
---  Otters   | 46100000
 --  Kodiak   | 50000000
+--  Otters   | 46100000
+--  Capybara | 19500000
 -- (3 rows)
