@@ -13,4 +13,4 @@ ORDER BY t1.employeeid;
 --    ename    | employeeid
 -------------+------------
 -- May Owens   |      81532
--- Emery Woods |      91243-
+-- Emery Woods |      91243
