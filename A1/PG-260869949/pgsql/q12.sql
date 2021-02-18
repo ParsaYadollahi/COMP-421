@@ -1,18 +1,22 @@
-SELECT pname as name
-FROM
+SELECT pname
+FROM project
+WHERE NOT pname IN
 (
+  SELECT pname FROM (
   SELECT pname, count(*) as num
   FROM devassignments
   GROUP BY pname
-) as t1
-WHERE t1.num <= 2
-ORDER BY t1.pname
+  ) AS t1
+  WHERE t1.num > 2
+)
+ORDER BY pname ASC
 ;
 
 
---    name
+--    pname
 -- -----------
 --  Albatrose
 --  Capybara
+--  Haddock
 --  Snowy
--- (3 rows)
+-- (4 rows)
