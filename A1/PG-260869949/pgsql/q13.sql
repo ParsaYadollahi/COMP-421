@@ -1,5 +1,5 @@
-SELECT t1.pname, t2.numdocs
-FROM project as t1 JOIN
+SELECT t1.pname, COALESCE(t2.numdocs,0) as "numdocs"
+FROM project as t1 LEFT JOIN
 (SELECT pname, count(*) as numdocs
 FROM document
 GROUP BY pname) as t2
@@ -7,7 +7,7 @@ GROUP BY pname) as t2
 ON t1.pname = t2.pname
 WHERE t1.ptype = 'internal'
 
-ORDER BY t2.numdocs DESC, t2.pname ASC
+ORDER BY COALESCE(t2.numdocs,0) DESC, t2.pname ASC
 ;
 
 
