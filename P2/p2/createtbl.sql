@@ -17,3 +17,16 @@ CREATE TABLE MYTEST01
 );
 
 
+CREATE TABLE resident
+(
+	hinsurnum VARCHAR(30) NOT NULL
+  ,name VARCHAR(30) NOT NULL
+  ,gender VARCHAR(1) NOT NULL
+  ,birthdate DATE NOT NULL
+	,phone VARCHAR(10) NOT NULL
+  ,city VARCHAR(15) NOT NULL
+  ,postalcode VARCHAR(15) NOT NULL
+  ,streetaddr VARCHAR(30) NOT NULL
+  ,regdate DATE NOT NULL
+  ,PRIMARY KEY (hinsurnum)
+);
