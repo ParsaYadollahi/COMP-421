@@ -10,3 +10,14 @@ CONNECT TO cs421;
 -- This is only an example of how you add drop table ddls to this file.
 --   You may remove it.
 DROP TABLE MYTEST01;
+
+DROP TABLE slot;
+DROP TABLE vial;
+DROP TABLE batch;
+DROP TABLE vaccine;
+DROP TABLE vaccdates;
+DROP TABLE vacclocation;
+DROP TABLE nurse;
+DROP TABLE hospital;
+DROP TABLE resident;
+DROP TABLE priority;
