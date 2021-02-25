@@ -21,13 +21,13 @@ CREATE TABLE MYTEST01
 CREATE TABLE priority
 (
   prionum INTEGER NOT NULL,
-  cname VARCHAR(255) NOT NULL,
+  cname VARCHAR(50) NOT NULL,
   PRIMARY KEY (cname)
 );
 
 CREATE TABLE vaccine
 (
-  vname VARCHAR(255) NOT NULL,
+  vname VARCHAR(50) NOT NULL,
   waitperiod INTEGER NOT NULL,
   doses INTEGER NOT NULL,
   PRIMARY KEY (vname)
@@ -35,32 +35,32 @@ CREATE TABLE vaccine
 
 CREATE TABLE resident
 (
-	hinsurnum INTEGER NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  gender VARCHAR(255) NOT NULL,
+	hinsurnum VARCHAR(50) NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  gender VARCHAR(50) NOT NULL,
   birthdate DATE NOT NULL,
-  phone VARCHAR(255) NOT NULL,
-  city VARCHAR(255) NOT NULL,
-  postalcode VARCHAR(255) NOT NULL,
-  streetaddr VARCHAR(255) NOT NULL,
+  phone VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  postalcode VARCHAR(50) NOT NULL,
+  streetaddr VARCHAR(50) NOT NULL,
   regdate DATE NOT NULL,
-  cname VARCHAR(255) NOT NULL,
+  cname VARCHAR(50) NOT NULL,
   PRIMARY KEY (hinsurnum),
   FOREIGN KEY (cname) REFERENCES priority
 );
 
 CREATE TABLE vacclocation
 (
-  lname VARCHAR(255) NOT NULL,
-  city VARCHAR(255) NOT NULL,
-  postalcode VARCHAR(255) NOT NULL,
-  address VARCHAR(255) NOT NULL,
+  lname VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  postalcode VARCHAR(50) NOT NULL,
+  address VARCHAR(50) NOT NULL,
   PRIMARY KEY (lname)
 );
 
 CREATE TABLE hospital
 (
-  lname VARCHAR(255) NOT NULL,
+  lname VARCHAR(50) NOT NULL,
   PRIMARY KEY (lname),
   FOREIGN KEY (lname) references vacclocation
 );
@@ -68,9 +68,9 @@ CREATE TABLE hospital
 
 CREATE TABLE nurse
 (
-  cnlnumber INTEGER NOT NULL,
-  nname VARCHAR(255) NOT NULL,
-  employer VARCHAR(255) NOT NULL,
+  cnlnumber VARCHAR(50) NOT NULL,
+  nname VARCHAR(50) NOT NULL,
+  employer VARCHAR(50) NOT NULL,
   PRIMARY KEY (cnlnumber),
   FOREIGN KEY (employer) REFERENCES hospital
 );
@@ -78,7 +78,7 @@ CREATE TABLE nurse
 
 CREATE TABLE vaccdates
 (
-  lname VARCHAR(255) NOT NULL,
+  lname VARCHAR(50) NOT NULL,
   vdate DATE NOT NULL,
   PRIMARY KEY(lname, vdate),
   FOREIGN KEY (lname) references vacclocation
@@ -86,9 +86,10 @@ CREATE TABLE vaccdates
 
 CREATE TABLE nurseassignments
 (
-	cnlnumber INTEGER NOT NULL,
-	lname VARCHAR(255) NOT NULL,
+	cnlnumber VARCHAR(50) NOT NULL,
+	lname VARCHAR(50) NOT NULL,
 	vdate DATE NOT NULL,
+  PRIMARY KEY (cnlnumber, lname, vdate),
 	FOREIGN KEY(cnlnumber) REFERENCES nurse,
 	FOREIGN KEY(lname,vdate) REFERENCES vaccdates
 );
@@ -96,12 +97,12 @@ CREATE TABLE nurseassignments
 
 CREATE TABLE batch
 (
-  vname VARCHAR(255) NOT NULL,
+  vname VARCHAR(50) NOT NULL,
   batchnumber INTEGER NOT NULL,
   manudate DATE NOT NULL,
   expiradate DATE NOT NULL,
   numvials INTEGER NOT NULL,
-  lname VARCHAR(255) NOT NULL,
+  lname VARCHAR(50) NOT NULL,
   PRIMARY KEY (vname, batchnumber),
   FOREIGN KEY (vname) REFERENCES vaccine,
   FOREIGN KEY (lname) REFERENCES vacclocation
@@ -109,7 +110,7 @@ CREATE TABLE batch
 
 CREATE TABLE vial
 (
-  vname VARCHAR(255) NOT NULL,
+  vname VARCHAR(50) NOT NULL,
   batchnumber INTEGER NOT NULL,
   vialnumber INTEGER NOT NULL,
   PRIMARY KEY (vname, batchnumber, vialnumber),
@@ -121,13 +122,14 @@ CREATE TABLE slot
   slotnum INTEGER NOT NULL,
   vtime TIME NOT NULL,
   vdate DATE NOT NULL,
-  lname VARCHAR(255) NOT NULL,
-  cnlnumber INTEGER,
+  lname VARCHAR(50) NOT NULL,
+  cnlnumber VARCHAR(50),
   vialnumber INTEGER,
   batchnumber INTEGER,
-  vname VARCHAR(255),
-  hinsurnum INTEGER,
-  PRIMARY KEY (slotnum, vdate, lname),
+  vname VARCHAR(50),
+  hinsurnum VARCHAR(50),
+  asgndate DATE,
+  PRIMARY KEY (slotnum, vdate, lname, vtime),
   FOREIGN KEY (lname, vdate) REFERENCES vaccdates,
   FOREIGN KEY (cnlnumber) REFERENCES nurse,
   FOREIGN KEY (hinsurnum) REFERENCES resident,

@@ -11,13 +11,15 @@ CONNECT TO cs421;
 --   You may remove it.
 DROP TABLE MYTEST01;
 
+
 DROP TABLE slot;
 DROP TABLE vial;
 DROP TABLE batch;
-DROP TABLE vaccine;
+DROP TABLE nurseassignments;
 DROP TABLE vaccdates;
-DROP TABLE vacclocation;
 DROP TABLE nurse;
 DROP TABLE hospital;
+DROP TABLE vacclocation;
 DROP TABLE resident;
+DROP TABLE vaccine;
 DROP TABLE priority;
