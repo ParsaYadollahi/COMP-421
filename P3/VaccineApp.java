@@ -55,6 +55,7 @@ class VaccineApp
 
         if (optionChosen.equals("1") || optionChosen.equals("Add a Person")) addPerson(con, statement, sqlCode, sqlState);
         if (optionChosen.equals("2") || optionChosen.equals("Assign a slot to a Person")) assignSlot(con, statement, sqlCode, sqlState);
+        if (optionChosen.equals("3") || optionChosen.equals("Enter Vaccination information")) vaccineInfo(con, statement, sqlCode, sqlState);
 
 
       statement.close ( ) ;
@@ -176,46 +177,15 @@ class VaccineApp
     public static void assignSlot(Connection con, Statement statement, int sqlCode, String sqlState) {
       // Inserting Data into the table - Add a person
       System.out.println("Please entre the relevant information:\n");
-      System.out.println("\tslotnum INTEGER NOT NULL");
-      System.out.println("\tvtime TIME NOT NULL");
-      System.out.println("\tvdate VARCHAR(50) NOT NULL,");
-      System.out.println("\tlname VARCHAR(50),");
-      System.out.println("\tcnlnumber VARCHAR(50),");
-      System.out.println("\tvialnumber INTEGER,");
-      System.out.println("\tbatchnumber INTEGER,");
-      System.out.println("\tvname VARCHAR(50),");
-      System.out.println("\thinsurnum VARCHAR(50),");
-      System.out.println("\tasgndate DATE,");
+      System.out.println("\tSocial Insurance Number");
 
-      Scanner slotNumScanner = new Scanner(System.in);
-      String slotNumDetails = slotNumScanner.nextLine();
-
-      Scanner vtimeScanner = new Scanner(System.in);
-      String vtimeDetails = vtimeScanner.nextLine();
-
-      Scanner vdateScanner = new Scanner(System.in);
-      String vdateDetails = vdateScanner.nextLine();
-
-      Scanner lnameScanner = new Scanner(System.in);
-      String lnameDetails = lnameScanner.nextLine();
-
-      Scanner cnlnumberScanner = new Scanner(System.in);
-      String cnlnumberDetails = cnlnumberScanner.nextLine();
-
-      Scanner vialnumberScanner = new Scanner(System.in);
-      String vialnumberDetails = vialnumberScanner.nextLine();
-
-      Scanner batchnumberScanner = new Scanner(System.in);
-      String batchnumberDetails = batchnumberScanner.nextLine();
-
-      Scanner vnameScanner = new Scanner(System.in);
-      String vnameDetails = vnameScanner.nextLine();
+      String slotNumDetails = "";
+      String vtimeDetails = "";
+      String vdateDetails = "";
+      String lnameDetails = "";
 
       Scanner hinsurnumScanner = new Scanner(System.in);
       String hinsurnumDetails = hinsurnumScanner.nextLine();
-
-      Scanner asgndateScanner = new Scanner(System.in);
-      String asgndateDetails = asgndateScanner.nextLine();
 
       try {
         // Number of doses taken
@@ -254,54 +224,55 @@ class VaccineApp
         }
 
 
-      // Get the last time they took their dose
-      java.sql.Date today = new java.sql.Date(new Date().getTime());
+        // Get the last time they took their dose
+        java.sql.Date today = new java.sql.Date(new Date().getTime());
 
 
-      String lastDoseQuery = "SELECT vdate FROM slot WHERE hinsurnum = " + hinsurnumDetails + " ORDER BY vdate ASC";
-      java.sql.ResultSet rslastDoseQuery = statement.executeQuery ( lastDoseQuery );
+        String lastDoseQuery = "SELECT vdate FROM slot WHERE hinsurnum = " + hinsurnumDetails + " ORDER BY vdate ASC";
+        java.sql.ResultSet rslastDoseQuery = statement.executeQuery ( lastDoseQuery );
 
-      // If they have never taken a doses, there is no waittime
-      java.sql.Date lastvdate = new java.sql.Date(new Date(-999999).getTime());
-      while ( rslastDoseQuery.next() ) {
-        // want the earliest date before today
-        if (rslastDoseQuery.getDate(1).before(today)){
-          lastvdate = rslastDoseQuery.getDate(1);
-        }
-        System.out.println("Today = " + today + "  lastvdate = " + lastvdate);
-      }
-
-      String openSlotsQuery = "SELECT * FROM slot WHERE hinsurnum IS NULL ORDER BY vdate";
-      java.sql.ResultSet rsOpenSlots = statement.executeQuery ( openSlotsQuery );
-      java.sql.Date vdateOpenSlot = today; // Find the next open slot
-
-      String vnameOpenSlot = "";
-      while (rsOpenSlots.next()) {
-        vdateOpenSlot = rsOpenSlots.getDate(3);
-        vnameOpenSlot = rsOpenSlots.getString(8);
-        // if the slot is in the future and if the slot fits within the wait period
-        if (today.before(vdateOpenSlot) && addDays(lastvdate, waitPeriodNeeded).before(vdateOpenSlot)) {
-          // Check if they have the same vaccine
-          if (hasTakenVaccine == false) {
-            slotNumDetails = rsOpenSlots.getString(1);
-            vdateDetails = rsOpenSlots.getString(3);
-            lnameDetails = rsOpenSlots.getString(4);
-            vtimeDetails = rsOpenSlots.getString(2);
-            break;
+        // If they have never taken a doses, there is no waittime
+        java.sql.Date lastvdate = new java.sql.Date(new Date(-999999).getTime());
+        while ( rslastDoseQuery.next() ) {
+          // want the earliest date before today
+          if (rslastDoseQuery.getDate(1).before(today)){
+            lastvdate = rslastDoseQuery.getDate(1);
           }
-          else if (vnameOpenSlot.equals(vnameTaken) && hasTakenVaccine == true) {
-            slotNumDetails = rsOpenSlots.getString(1);
-            vdateDetails = rsOpenSlots.getString(3);
-            lnameDetails = rsOpenSlots.getString(4);
-            vtimeDetails = rsOpenSlots.getString(2);
-            break;
+          System.out.println("Today = " + today + "  lastvdate = " + lastvdate);
+        }
+
+        String openSlotsQuery = "SELECT * FROM slot WHERE hinsurnum IS NULL ORDER BY vdate";
+        java.sql.ResultSet rsOpenSlots = statement.executeQuery ( openSlotsQuery );
+        java.sql.Date vdateOpenSlot = today; // Find the next open slot
+
+        String vnameOpenSlot = "";
+        while (rsOpenSlots.next()) {
+          vdateOpenSlot = rsOpenSlots.getDate(3);
+          vnameOpenSlot = rsOpenSlots.getString(8);
+          // if the slot is in the future and if the slot fits within the wait period
+          if (today.before(vdateOpenSlot) && addDays(lastvdate, waitPeriodNeeded).before(vdateOpenSlot)) {
+            // Check if they have the same vaccine
+            if (hasTakenVaccine == false) {
+              slotNumDetails = rsOpenSlots.getString(1);
+              vdateDetails = rsOpenSlots.getString(3);
+              lnameDetails = rsOpenSlots.getString(4);
+              vtimeDetails = rsOpenSlots.getString(2);
+              break;
+            }
+            // Already vaccine allocated to slot
+            else if (vnameOpenSlot.equals(vnameTaken) && hasTakenVaccine == true) {
+              slotNumDetails = rsOpenSlots.getString(1);
+              vdateDetails = rsOpenSlots.getString(3);
+              lnameDetails = rsOpenSlots.getString(4);
+              vtimeDetails = rsOpenSlots.getString(2);
+              break;
+            }
           }
         }
-      }
 
-      String updateSQL = "UPDATE slot SET slotnum = '"+slotNumDetails+"', vtime = '"+vtimeDetails+"', vdate = '"+vdateDetails+"', lname = '"+lnameDetails+"', cnlnumber = '"+cnlnumberDetails+"', vialnumber = '"+vialnumberDetails+"', batchnumber= '"+batchnumberDetails+"', vname = '"+vnameDetails+"', hinsurnum = '"+hinsurnumDetails+"', asgndate = '"+today+"' WHERE slotnum='"+slotNumDetails+"' AND vdate='"+vdateDetails+"' AND lname = '"+lnameDetails+"' AND vtime = '"+vtimeDetails+"'";
-      System.out.println(updateSQL);
-      statement.executeUpdate(updateSQL);
+        String updateSQL = "UPDATE slot SET hinsurnum = '"+hinsurnumDetails+"', asgndate = '"+today+"' WHERE slotnum='"+slotNumDetails+"' AND vdate='"+vdateDetails+"' AND lname = '"+lnameDetails+"' AND vtime = '"+vtimeDetails+"'";
+        System.out.println(updateSQL);
+        statement.executeUpdate(updateSQL);
       }
       catch (SQLException e)
       {
@@ -315,6 +286,116 @@ class VaccineApp
       }
     }
 
+    public static void vaccineInfo(Connection con, Statement statement, int sqlCode, String sqlState) {
+
+      System.out.println("Please entre the relevant information:\n");
+      System.out.println("\tslotnum INTEGER NOT NULL");
+      System.out.println("\tvtime TIME NOT NULL");
+      System.out.println("\tvdate VARCHAR(50) NOT NULL,");
+      System.out.println("\tlname VARCHAR(50),");
+      System.out.println("\tcnlnumber VARCHAR(50),");
+      System.out.println("\tvialnumber INTEGER,");
+      System.out.println("\tbatchnumber INTEGER,");
+      System.out.println("\tvname VARCHAR(50),");
+      System.out.println("\thinsurnum VARCHAR(50),");
+      System.out.println("\tasgndate DATE,");
+
+      Scanner slotNumScanner = new Scanner(System.in);
+      String slotNumDetails = slotNumScanner.nextLine();
+
+      Scanner vtimeScanner = new Scanner(System.in);
+      String vtimeDetails = vtimeScanner.nextLine();
+
+      Scanner vdateScanner = new Scanner(System.in);
+      String vdateDetails = vdateScanner.nextLine();
+
+      Scanner lnameScanner = new Scanner(System.in);
+      String lnameDetails = lnameScanner.nextLine();
+
+      Scanner cnlnumberScanner = new Scanner(System.in);
+      String cnlnumberDetails = cnlnumberScanner.nextLine();
+
+      Scanner vialnumberScanner = new Scanner(System.in);
+      String vialnumberDetails = vialnumberScanner.nextLine();
+
+      Scanner batchnumberScanner = new Scanner(System.in);
+      String batchnumberDetails = batchnumberScanner.nextLine();
+
+      Scanner vnameScanner = new Scanner(System.in);
+      String vnameDetails = vnameScanner.nextLine();
+
+      Scanner hinsurnumScanner = new Scanner(System.in);
+      String hinsurnumDetails = hinsurnumScanner.nextLine();
+
+      Date today = new Date(Calendar.getInstance().getTime().getTime());
+
+      try {
+
+        String vaccineNameForHIN = "SELECT vname, vdate FROM SLOT WHERE hinsurnum = " + hinsurnumDetails;
+        java.sql.ResultSet vaccineSlotsRS = statement.executeQuery(vaccineNameForHIN);
+        System.out.println(vaccineNameForHIN);
+
+
+        String vname = "";
+        while (vaccineSlotsRS.next()){
+          String vnameTemp = vaccineSlotsRS.getString(1);
+
+          if (vnameTemp != null && !vnameTemp.equals("NULL")) {
+            vname = vnameTemp;
+          }
+        }
+
+        // String slotsRC = "SELECT * FROM SLOT WHERE vname = '" + vnameDetails + "' AND vialnumber= '" + vialnumberDetails  + "' AND batchnumber= '" + batchnumberDetails + "';";
+        // System.out.println(slotsRC);
+        // java.sql.ResultSet vaccineRS = statement.executeQuery(slotsRC);
+
+        // if(vaccineRS.next()) {
+        //   System.out.println("ERROR: Vial is already in use.");
+        //   statement.close () ;
+        //   con.close () ;
+        //   return;
+        // }
+
+
+        // QUERY FOR NURSEASSIGNMENTS HERE FOR THAT SPECIFIC NURSE DATE AND LOCATION
+        String checkNurseAssignmentsQuery = "SELECT * FROM nurseassignments WHERE vdate='" + vdateDetails + "' AND lname = '" + lnameDetails + "' AND cnlnumber= '" + cnlnumberDetails + "';";
+        System.out.println(checkNurseAssignmentsQuery);
+        java.sql.ResultSet nurseAssignmentsRC = statement.executeQuery(checkNurseAssignmentsQuery);
+        System.out.println(checkNurseAssignmentsQuery);
+
+         if(nurseAssignmentsRC.next()) {
+            if (vname.equals("")) {
+              // CASE NEVER BEEN VACCINATED SO UPDATE AND GOOD
+              String updateSQL = "UPDATE slot SET cnlnumber = " + cnlnumberDetails + ", vialnumber='" + vialnumberDetails  + "', batchnumber= '" + batchnumberDetails   + "', vname='" + vnameDetails  + "' WHERE lname = '"+ lnameDetails + "' AND vdate = '" + vdateDetails + "' AND slotnum = '" + slotNumDetails + "';";
+              System.out.println(updateSQL);
+              statement.executeUpdate(updateSQL);
+              System.out.println("No vaccine - CASE 1");
+            } else {
+              if (vname.equals(vnameDetails)) {
+                  // CASE WHERE CHECK IF VACCINATED BY SAME VACCINE
+                  String updateSQL = "UPDATE slot SET cnlnumber = " + cnlnumberDetails + ", vialnumber='" + vialnumberDetails  + "', batchnumber= '" + batchnumberDetails  + "', vname='" + vnameDetails  + "' WHERE lname = '"+ lnameDetails + "' AND vdate = '" + vdateDetails + "' AND slotnum = '" + slotNumDetails+ "';";
+                  System.out.println(updateSQL);
+                  statement.executeUpdate(updateSQL);
+                  System.out.println("Good vaccine - CASE 2");
+              } else {
+                  System.out.println("ERROR: The Resident has been vaccinated with a different Vaccine");
+              }
+            }
+          } else {
+            System.out.println("ERROR: The assigned nurse has not been assigned to the inpute Location during that Date.");
+          }
+        }
+        catch (SQLException e)
+        {
+          sqlCode = e.getErrorCode(); // Get SQLCODE
+          sqlState = e.getSQLState(); // Get SQLSTATE
+
+          // Your code to handle errors comes here;
+          // something more meaningful than a print would be good
+          System.out.println("Code: " + sqlCode + "  sqlState: " + sqlState);
+          System.out.println(e);
+        }
+      }
 
 
     public static Date addDays(Date date, int days) {
