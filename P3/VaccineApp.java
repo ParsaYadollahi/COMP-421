@@ -181,15 +181,47 @@ class VaccineApp
       System.out.println("Please entre the relevant information:\n");
       System.out.println("\tSocial Insurance Number");
 
-      String slotNumDetails = "";
-      String vtimeDetails = "";
-      String vdateDetails = "";
-      String lnameDetails = "";
+      System.out.println("\tslotnum INTEGER NOT NULL");
+      System.out.println("\tvtime TIME NOT NULL");
+      System.out.println("\tvdate VARCHAR(50) NOT NULL,");
+      System.out.println("\tlname VARCHAR(50) NOT NULL,");
+
 
       Scanner hinsurnumScanner = new Scanner(System.in);
       String hinsurnumDetails = hinsurnumScanner.nextLine();
 
+      Scanner slotNumScanner = new Scanner(System.in);
+      String slotNumDetails = slotNumScanner.nextLine();
+
+      Scanner vtimeScanner = new Scanner(System.in);
+      String vtimeDetails = vtimeScanner.nextLine();
+
+      Scanner vdateScanner = new Scanner(System.in);
+      String vdateDetails = vdateScanner.nextLine();
+
+      Scanner lnameScanner = new Scanner(System.in);
+      String lnameDetails = lnameScanner.nextLine();
+
+      // String slotNumDetails = "";
+      // String vtimeDetails = "";
+      // String vdateDetails = "";
+      // String lnameDetails = "";
+
       try {
+        // Check if slot already taken
+        String isAllocatedSlot = "SELECT hinsurnum FROM slot WHERE vtime = '" + vtimeDetails + "' AND slotnum = '" + slotNumDetails + "' AND vdate = '" + vdateDetails + "' AND lname = '" + lnameDetails + "';";
+        System.out.println(isAllocatedSlot);
+        java.sql.ResultSet rsisAllocatedSlot = statement.executeQuery ( isAllocatedSlot );
+        while (rsisAllocatedSlot.next()) {
+          String ouput = rsisAllocatedSlot.getString(1);
+          if (ouput != null && !ouput.equals("NULL")) {
+            System.out.println("This slot is already taken");
+            statement.close ( ) ;
+            con.close ( ) ;
+            return;
+          }
+        }
+
         // Number of doses taken
         String numDoesesQuery = "SELECT COUNT(*) FROM slot WHERE hinsurnum = " + hinsurnumDetails;
         java.sql.ResultSet rsNumDoses = statement.executeQuery ( numDoesesQuery );
@@ -202,7 +234,6 @@ class VaccineApp
 
 
         // Get their vaccine
-        // TODO taking into account if they've already taken a vaccine
         String vnameQuery = "SELECT vname FROM slot WHERE hinsurnum = " + hinsurnumDetails;
         java.sql.ResultSet rsvName = statement.executeQuery ( vnameQuery );
         String vnameTaken = "";
@@ -220,7 +251,7 @@ class VaccineApp
           waitPeriodNeeded = rsNumDosesNeeded.getInt(1);
         }
 
-        if (numDoesesNeeded - numDosesTaken == 0){
+        if (numDoesesNeeded - numDosesTaken == 0 && vnameTaken != ""){
           System.out.println("Does not need any more doses!");
           statement.close () ;
           con.close () ;
