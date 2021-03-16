@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 class VaccineApp
 {
+
+    static boolean loop = true;
     public static void main ( String [ ] args ) throws SQLException
     {
       // Unique table names.  Either the user supplies a unique identifier as a command line argument, or the program makes one up.
@@ -47,17 +49,17 @@ class VaccineApp
         Connection con = DriverManager.getConnection (url,your_userid,your_password) ;
         Statement statement = con.createStatement ( ) ;
 
-        System.out.println("VaccineApp Main Menu");
-        System.out.print(" \t1. Add a Person\n \t2. Assign a slot to a Person\n \t3. Enter Vaccination information\n \t4. Exit Application\n Please Enter Your Option:  ");
+        while(loop) {
+          System.out.println("VaccineApp Main Menu");
+          System.out.print(" \t1. Add a Person\n \t2. Assign a slot to a Person\n \t3. Enter Vaccination information\n \t4. Exit Application\n Please Enter Your Option:  ");
+          Scanner optionScanner = new Scanner(System.in);  // Create a Scanner object
+          String optionChosen = optionScanner.nextLine();  // Read user input
 
-        Scanner optionScanner = new Scanner(System.in);  // Create a Scanner object
-        String optionChosen = optionScanner.nextLine();  // Read user input
-
-        if (optionChosen.equals("1") || optionChosen.equals("Add a Person")) addPerson(con, statement, sqlCode, sqlState);
-        if (optionChosen.equals("2") || optionChosen.equals("Assign a slot to a Person")) assignSlot(con, statement, sqlCode, sqlState);
-        if (optionChosen.equals("3") || optionChosen.equals("Enter Vaccination information")) vaccineInfo(con, statement, sqlCode, sqlState);
-
-
+          if (optionChosen.equals("1") || optionChosen.equals("Add a Person")) addPerson(con, statement, sqlCode, sqlState);
+          if (optionChosen.equals("2") || optionChosen.equals("Assign a slot to a Person")) assignSlot(con, statement, sqlCode, sqlState);
+          if (optionChosen.equals("3") || optionChosen.equals("Enter Vaccination information")) vaccineInfo(con, statement, sqlCode, sqlState);
+          if (optionChosen.equals("4") || optionChosen.equals("Exit Application")) exitProgram();
+        }
       statement.close ( ) ;
       con.close ( ) ;
     }
@@ -220,6 +222,8 @@ class VaccineApp
 
         if (numDoesesNeeded - numDosesTaken == 0){
           System.out.println("Does not need any more doses!");
+          statement.close () ;
+          con.close () ;
           return;
         }
 
@@ -345,34 +349,21 @@ class VaccineApp
           }
         }
 
-        // String slotsRC = "SELECT * FROM SLOT WHERE vname = '" + vnameDetails + "' AND vialnumber= '" + vialnumberDetails  + "' AND batchnumber= '" + batchnumberDetails + "';";
-        // System.out.println(slotsRC);
-        // java.sql.ResultSet vaccineRS = statement.executeQuery(slotsRC);
-
-        // if(vaccineRS.next()) {
-        //   System.out.println("ERROR: Vial is already in use.");
-        //   statement.close () ;
-        //   con.close () ;
-        //   return;
-        // }
-
-
-        // QUERY FOR NURSEASSIGNMENTS HERE FOR THAT SPECIFIC NURSE DATE AND LOCATION
+        // Query nurseassignment for specific date and location
         String checkNurseAssignmentsQuery = "SELECT * FROM nurseassignments WHERE vdate='" + vdateDetails + "' AND lname = '" + lnameDetails + "' AND cnlnumber= '" + cnlnumberDetails + "';";
-        System.out.println(checkNurseAssignmentsQuery);
         java.sql.ResultSet nurseAssignmentsRC = statement.executeQuery(checkNurseAssignmentsQuery);
         System.out.println(checkNurseAssignmentsQuery);
 
          if(nurseAssignmentsRC.next()) {
             if (vname.equals("")) {
-              // CASE NEVER BEEN VACCINATED SO UPDATE AND GOOD
+              // Never been vaccinated so can allocated whatever
               String updateSQL = "UPDATE slot SET cnlnumber = " + cnlnumberDetails + ", vialnumber='" + vialnumberDetails  + "', batchnumber= '" + batchnumberDetails   + "', vname='" + vnameDetails  + "' WHERE lname = '"+ lnameDetails + "' AND vdate = '" + vdateDetails + "' AND slotnum = '" + slotNumDetails + "';";
               System.out.println(updateSQL);
               statement.executeUpdate(updateSQL);
               System.out.println("No vaccine - CASE 1");
             } else {
               if (vname.equals(vnameDetails)) {
-                  // CASE WHERE CHECK IF VACCINATED BY SAME VACCINE
+                  // Check if resident has been vaccinated by that vname before
                   String updateSQL = "UPDATE slot SET cnlnumber = " + cnlnumberDetails + ", vialnumber='" + vialnumberDetails  + "', batchnumber= '" + batchnumberDetails  + "', vname='" + vnameDetails  + "' WHERE lname = '"+ lnameDetails + "' AND vdate = '" + vdateDetails + "' AND slotnum = '" + slotNumDetails+ "';";
                   System.out.println(updateSQL);
                   statement.executeUpdate(updateSQL);
@@ -382,7 +373,7 @@ class VaccineApp
               }
             }
           } else {
-            System.out.println("ERROR: The assigned nurse has not been assigned to the inpute Location during that Date.");
+            System.out.println("ERROR: The assigned nurse has not been assigned to the input Location during that Date.");
           }
         }
         catch (SQLException e)
@@ -397,6 +388,11 @@ class VaccineApp
         }
       }
 
+
+      public static void exitProgram() {
+        System.out.println("Program has been terminated");
+        loop = false;
+    }
 
     public static Date addDays(Date date, int days) {
         Calendar c = Calendar.getInstance();
