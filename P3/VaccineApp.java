@@ -272,10 +272,20 @@ class VaccineApp
         vnameOpenSlot = rsOpenSlots.getString(8);
         if (today.before(vdateOpenSlot) && addDays(lastvdate, waitPeriodNeeded).before(vdateOpenSlot)) {
           if (vnameOpenSlot.equals(vnameTaken)) {
-            continue;
+            slotNumDetails = rsOpenSlots.getString(1);
+            vdateDetails = rsOpenSlots.getString(3);
+            lnameDetails = rsOpenSlots.getString(4);
+            vtimeDetails = rsOpenSlots.getString(2);
+            break;
           }
         }
-        }
+      }
+
+      String updateSQL = "UPDATE slot SET slotnum = '"+slotNumDetails+"', vtime = '"+vtimeDetails+"', vdate = '"+vdateDetails+"', lname = '"+lnameDetails+"', cnlnumber = '"+cnlnumberDetails+"', vialnumber = '"+vialnumberDetails+"', batchnumber= '"+batchnumberDetails+"', vname = '"+vnameDetails+"', hinsurnum = '"+hinsurnumDetails+"', asgndate = '"+today+"' WHERE slotnum='"+slotNumDetails+"' AND vdate='"+vdateDetails+"' AND lname = '"+lnameDetails+"' AND vtime = '"+vtimeDetails+"'";
+      System.out.println(updateSQL);
+      statement.executeUpdate(updateSQL);
+
+
 
       }
       catch (SQLException e)
