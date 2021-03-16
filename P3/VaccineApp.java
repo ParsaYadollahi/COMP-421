@@ -2,6 +2,10 @@ import java.sql.* ;
 import java.util.Date;
 import java.util.Scanner;  // Import the Scanner class
 
+import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class VaccineApp
 {
@@ -259,20 +263,15 @@ class VaccineApp
         System.out.println("Today = " + today + "  lastvdate = " + lastvdate);
       }
 
-
-
-
-
-      String openSlotsQuery = "SELECT * FROM slot WHERE hinsurnum IS NULL";
+      String openSlotsQuery = "SELECT * FROM slot WHERE hinsurnum IS NULL ORDER BY vdate";
       java.sql.ResultSet rsOpenSlots = statement.executeQuery ( openSlotsQuery );
       java.sql.Date vdateOpenSlot = today;
       String vnameOpenSlot = "";
       while (rsOpenSlots.next()) {
         vdateOpenSlot = rsOpenSlots.getDate(3);
         vnameOpenSlot = rsOpenSlots.getString(8);
-        if (today.before(vdateOpenSlot)) {
+        if (today.before(vdateOpenSlot) && addDays(lastvdate, waitPeriodNeeded).before(vdateOpenSlot)) {
           if (vnameOpenSlot.equals(vnameTaken)) {
-
             continue;
           }
         }
@@ -289,5 +288,14 @@ class VaccineApp
         System.out.println("Code: " + sqlCode + "  sqlState: " + sqlState);
         System.out.println(e);
       }
+    }
+
+
+
+    public static Date addDays(Date date, int days) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, days);
+        return new java.sql.Date(c.getTimeInMillis());
     }
 }
