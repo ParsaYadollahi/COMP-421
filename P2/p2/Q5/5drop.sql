@@ -1,0 +1,3 @@
+CONNECT "CS421";
+
+DROP VIEW mtlnurses;

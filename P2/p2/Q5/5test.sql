@@ -1,0 +1,5 @@
+CONNECT TO "CS421";
+
+SELECT * FROM mtlnurses
+LIMIT 5
+;
